@@ -34,12 +34,19 @@ from django.urls import re_path
 
 @api_view(['GET'])
 def api_root(request, format=None):
+    base_url = request.build_absolute_uri('/')
+    codespace_url = 'https://obscure-dollop-vqv9r4j97rwcv6p-8000.app.github.dev/api/'
     return Response({
-        'users': '/users/',
-        'teams': '/teams/',
-        'activity': '/activity/',
-        'leaderboard': '/leaderboard/',
-        'workouts': '/workouts/',
+        'users': codespace_url + 'users/',
+        'teams': codespace_url + 'teams/',
+        'activity': codespace_url + 'activity/',
+        'leaderboard': codespace_url + 'leaderboard/',
+        'workouts': codespace_url + 'workouts/',
+        'local_users': base_url + 'api/users/',
+        'local_teams': base_url + 'api/teams/',
+        'local_activity': base_url + 'api/activity/',
+        'local_leaderboard': base_url + 'api/leaderboard/',
+        'local_workouts': base_url + 'api/workouts/',
     })
 
 urlpatterns = [
