@@ -18,39 +18,28 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework import routers
-from . import views
+from rest_framework.routers import DefaultRouter
+from rest_framework.urlpatterns import format_suffix_patterns
+from .views import (
+    UserViewSet,
+    TeamViewSet,
+    ActivityViewSet,
+    LeaderboardViewSet,
+    WorkoutViewSet,
+)
 
-router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'teams', views.TeamViewSet)
-router.register(r'activity', views.ActivityViewSet)
-router.register(r'leaderboard', views.LeaderboardViewSet)
-router.register(r'workouts', views.WorkoutViewSet)
+# Create a router and register our viewsets
+router = DefaultRouter()
+router.register(r'users', UserViewSet)
+router.register(r'teams', TeamViewSet)
+router.register(r'activities', ActivityViewSet)
+router.register(r'leaderboards', LeaderboardViewSet)
+router.register(r'workouts', WorkoutViewSet)
 
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from django.urls import re_path
-
-@api_view(['GET'])
-def api_root(request, format=None):
-    base_url = request.build_absolute_uri('/')
-    codespace_url = 'https://obscure-dollop-vqv9r4j97rwcv6p-8000.app.github.dev/api/'
-    return Response({
-        'users': codespace_url + 'users/',
-        'teams': codespace_url + 'teams/',
-        'activity': codespace_url + 'activity/',
-        'leaderboard': codespace_url + 'leaderboard/',
-        'workouts': codespace_url + 'workouts/',
-        'local_users': base_url + 'api/users/',
-        'local_teams': base_url + 'api/teams/',
-        'local_activity': base_url + 'api/activity/',
-        'local_leaderboard': base_url + 'api/leaderboard/',
-        'local_workouts': base_url + 'api/workouts/',
-    })
-
+# The API URLs are now determined automatically by the router
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    re_path(r'^$', api_root, name='api-root'),
 ]
+
+urlpatterns = format_suffix_patterns(urlpatterns)
